@@ -1,0 +1,26 @@
+Value Card_ID (\d+)
+Value Port_ID (\d+)
+Value Timestamp (\S+)
+Value Maximum_Rate (\S+)
+Value Fragments_Received (\d+)
+Value Packet_Reassembled (\d+)
+Value Fragments_Sent_to_Kernel (\d+)
+
+Start
+  ^\s{2}<reportData> -> Data
+
+Data
+  ^\s{4}<reportDataItems> -> Item
+  ^\s{2}</reportData> -> Start
+
+Item 
+  ^\s{6}<reportDataItem CardID>${Card_ID}</reportDataItem>
+  ^\s{6}<reportDataItem PortID>${Port_ID}</reportDataItem>
+  ^\s{6}<reportDataItem Timestamp>${Timestamp}</reportDataItem>
+  ^\s{6}<reportDataItem MaximumRate>${Maximum_Rate}</reportDataItem>
+  ^\s{6}<reportDataItem FragmentsRecived>${Fragments_Received}</reportDataItem>
+  ^\s{6}<reportDataItem PacketReassembled>${Packet_Reassembled}</reportDataItem>
+  ^\s{6}<reportDataItem FragmentsSent>${Fragments_Sent_to_Kernel}</reportDataItem>
+  ^\s{4}</reportDataItems> -> Record Data
+
+EOF
