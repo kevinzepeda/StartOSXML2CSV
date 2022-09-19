@@ -77,7 +77,6 @@ def print_help():
     <outputfile> : CSV file
     ''')
 if __name__ == '__main__':
-    breakpoint()
     if len(sys.argv) == 3:
         if os.path.exists(sys.argv[1]) and os.path.exists(sys.argv[2]):
             parse(sys.argv[1],sys.argv[2])
