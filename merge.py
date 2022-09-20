@@ -33,6 +33,8 @@ def merge(files):
     dataframes = [pd.read_csv(filename) for filename in files]
     for idx,value in enumerate(files):
         dataframes[idx].name = value
+        dataframes[idx]['SPGW'] = value[value.find('\r-'):-4][2:]
+        
     sheets = {rType: pd.concat([dataframe for dataframe in dataframes if rType in dataframe.name]) for rType in types}
 
     writer = pd.ExcelWriter(Project + Author + Version + date + '.xlsx',engine='xlsxwriter')   
