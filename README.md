@@ -16,3 +16,27 @@ Parse XML from StarOS Port Fragments Received Statistics
     ------
     <outputfile> : CSV file
 ```
+## Extract and Parse files from csv
+All file are saved on `reports` folder if not exists
+
+```
+mkdir reports
+```
+
+Connect to VPN and then execute:
+```
+bash extract.sh
+```
+or 
+```
+sudo chmod +x extract.sh
+
+./extract.sh
+```
+
+## Merge Reports
+Merge all reports by type in one Excel File
+
+```
+python merge.py reports/*.csv
+```
