@@ -2,4 +2,8 @@
 *.csv
 .DS_Store
 *.xlsx
-extract.sh
+env/
+__pycache__
+*/__pycache__
+app/scripts/*
+app/.env

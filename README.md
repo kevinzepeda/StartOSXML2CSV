@@ -1,11 +1,19 @@
-# Parse xml report
-StarOS Port Fragments Received Statistics
+# StarOS Port Fragments Received Statistics
+Extract Transform and get data in one file from StartOS
 
+Requeriments:
+    - Python3.9
+    - pip install -r requeriments.txt
+
+## Server Mode
+```
+
+```
 ## Simple Parser xml to csv for StarOS Port Fragments
 ```   
 Parse XML from StarOS Port Fragments Received Statistics
 
-    Usage:   python parse.py <filename> <template>
+    Usage:   python app/parse.py <filename> <template>
 
     Params
     ------
@@ -25,7 +33,7 @@ mkdir reports
 
 Connect to VPN and then execute:
 ```
-bash extract.sh
+bash app/extract.sh
 ```
 or 
 ```
@@ -38,5 +46,5 @@ sudo chmod +x extract.sh
 Merge all reports by type in one Excel File
 
 ```
-python merge.py reports/*.csv
+python app/merge.py reports/*.csv
 ```

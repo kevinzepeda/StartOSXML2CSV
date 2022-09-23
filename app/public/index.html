@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+    <title>StartOS Download Tool</title>
+</head>
+
+<body>
+    <div id="app">
+        <b-loading :is-full-page="true" v-model="isLoading" :can-cancel="false"></b-loading>
+        <div class="container">
+            <h1 class="title">StarOS Reports Dowload Tool</h1>
+            <h2 class="subtitle">Select Devices, Types of Report and Statidistics Days</h2>
+            <div class="buttons">
+                <b-button 
+                    label="Download"
+                    type="is-primary is-light"
+                    size="ismedium"
+                    @click="downloadReport"
+                    :disabled="(checkedDevices.length == 0) || (checkedTypes.length == 0)"/>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <b-table :data="devices" :checked-rows.sync="checkedDevices" checkable :checkbox-position="'left'">
+                        <b-table-column label="Device" v-slot="props">
+                            {{ props.row }}
+                        </b-table-column>
+                    </b-table>
+                </div>
+                <div class="column">
+                    <b-table :data="types" :checked-rows.sync="checkedTypes" checkable :checkbox-position="'left'">
+                        <b-table-column label="Type" sortable v-slot="props">
+                            {{ props.row }}
+                        </b-table-column>
+                    </b-table>
+                </div>
+                <div class="column">
+                    <b-field label="Stadistics Days">
+                        <b-select v-model="days">
+                            <option v-for="day in selectDays" :value="day.tag" :key="day.id">{{ day.name }}</option> 
+                        </b-select>
+                    </b-field>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://unpkg.com/vue@2"></script>
+<script src="https://unpkg.com/buefy/dist/components/table"></script>
+<script src="https://unpkg.com/buefy/dist/components/field"></script>
+<script src="https://unpkg.com/buefy/dist/components/select"></script>
+<script src="https://unpkg.com/buefy/dist/components/button"></script>
+<script src="https://unpkg.com/buefy/dist/components/loading"></script>
+
+
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                isLoading: false,
+                reports: [],
+                selectedReports:[],
+                checkedDevices: [],
+                checkedTypes: [],
+                types:[],
+                days: "30Days",
+                devices: [],
+                selectDays:[
+                    {id: 0, tag: "30Days", name:"30 Days"},
+                    {id: 1, tag: "7Days", name:"7 Days"},
+                    {id: 2, tag: "21Days", name:"21 Days"},
+                ]
+            }
+        },
+        methods: {
+            getReports(){
+                fetch('/reports/').then(response => {
+                    return response.json()
+                }).then((res) =>{
+                    this.reports = res.reports
+                    this.devices = res.devices
+                    this.types = res.types
+                })
+                .catch((error) =>{
+                    console.log(error)
+                })
+            },
+            downloadReport(){
+                this.isLoading = true
+                const selectedReportTypes = this.reports.filter( (item) => {
+                    return this.checkedTypes.includes(item.ReportName)
+                })
+                const reports = selectedReportTypes.filter((item) =>{
+                    return this.checkedDevices.includes(item.SPGW)
+                })
+                this.selectedReports = reports.map( item => {
+                    item.URL = item.URL.slice(0,item.URL.search('last') + 4) + this.days
+                    return item
+                })
+                fetch('/reports/',{
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: this.selectedReports })
+                }).then((res) => {
+                    return res.blob()
+                }).then(blob =>{
+                    this.isLoading = false
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "output.xlsx";
+                    document.body.appendChild(a); 
+                    a.click();    
+                    a.remove(); 
+                }).catch(error =>{
+                    this.isLoading = false
+                    console.log(error)
+                })
+            },
+            openLoading() {
+                this.isLoading = true
+                setTimeout(() => {
+                    this.isLoading = false
+                }, 10 * 1000)
+            }
+        },
+        beforeMount() {
+            this.getReports()
+        },
+    })
+</script>
+<style>
+    .buttons{
+        float: right;
+    }
+</style>
+</html>
