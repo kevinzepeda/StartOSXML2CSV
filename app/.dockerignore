@@ -1,0 +1,6 @@
+__pycache__
+scripts
+static/__pycache__
+templates
+merge.py
+parser.py
