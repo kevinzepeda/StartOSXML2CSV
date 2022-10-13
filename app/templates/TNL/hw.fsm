@@ -1,0 +1,18 @@
+Value distName (\S+)
+Value locationName (\S+)
+Value swVersion (.+)
+Value userLabel (.+)
+Value vendorName (.+)
+
+
+Start
+  ^\s{4}<managedObject class="HW".+distName="${distName}" -> Hw
+
+Hw
+  ^\s{6}<p name="locationName">${locationName}</p>
+  ^\s{6}<p name="swVersion">${swVersion}</p>
+  ^\s{6}<p name="userLabel">${userLabel}</p>
+  ^\s{6}<p name="vendorName">${vendorName}</p>
+  ^\s{4}</managedObject> -> Record Start
+
+EOF

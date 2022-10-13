@@ -1,0 +1,14 @@
+Value distName (\S+)
+Value localIpAddr (\S+)
+
+Start
+  ^\s{4}<managedObject class="IPIF_R".+distName="${distName}" -> IP
+
+IP
+  ^\s{4}<managedObject class="IPADDRESSV4" -> LocalIP
+  ^\s{4}</managedObject> -> Start
+
+LocalIP
+  ^\s{6}<p name="localIpAddr">${localIpAddr}</p> -> Record Start
+
+EOF
